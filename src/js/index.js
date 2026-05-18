@@ -69,3 +69,13 @@ function displayMovements(movements) {
   })
 }
 displayMovements(account1.movements)
+
+function createLogIn(accs) {
+  accs.map((acc) => {
+    acc.logIn = acc.owner.toLowerCase().split(" ").map((value) => {
+      return value[0]
+    }).join("")
+  })
+}
+createLogIn(accounts)
+console.log(accounts)
