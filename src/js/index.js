@@ -1,6 +1,4 @@
 // @ts-nocheck
-"use strict"
-
 const account1 = {
   owner: "Yaroslav Kashkarov",
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
@@ -87,4 +85,13 @@ function calcPrintBalance(movements) {
 }
 
 calcPrintBalance(account1.movements)
-console.log(accounts)
+
+function calcDisplaySum(movements) {
+  const incomes = movements.filter((value) => {
+    return value > 0
+  }).reduce((acc, value) => acc + value, 0
+  )
+  console.log(incomes)
+}
+
+calcDisplaySum(account2.movements)
