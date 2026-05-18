@@ -73,9 +73,18 @@ displayMovements(account1.movements)
 function createLogIn(accs) {
   accs.map((acc) => {
     acc.logIn = acc.owner.toLowerCase().split(" ").map((value) => {
-      return value[0]
+      value[0]
     }).join("")
   })
 }
 createLogIn(accounts)
+
+function calcPrintBalance(movements) {
+  const balance = movements.reduce((acc, value) => {
+    return acc + value
+  })
+  labelBalance.textContent = `${balance}$`
+}
+
+calcPrintBalance(account1.movements)
 console.log(accounts)
