@@ -85,13 +85,18 @@ function calcPrintBalance(movements) {
 }
 
 calcPrintBalance(account1.movements)
-
+// This funtion calculate sum 
 function calcDisplaySum(movements) {
   const incomes = movements.filter((value) => {
     return value > 0
-  }).reduce((acc, value) => acc + value, 0
-  )
-  console.log(incomes)
+  }).reduce((acc, value) => acc + value, 0)
+  labelSumIn.textContent = `${incomes}$`
+
+  const out = movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0)
+  labelSumOut.textContent = `${Math.abs(out)}$`
+  labelSumInterest.textContent = `${incomes + out}$`
 }
 
-calcDisplaySum(account2.movements)
+calcDisplaySum(account1.movements)
