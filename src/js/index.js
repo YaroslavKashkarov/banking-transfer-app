@@ -66,13 +66,12 @@ function displayMovements(movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html)
   })
 }
-displayMovements(account1.movements)
 
 function createLogIn(accs) {
   accs.map((acc) => {
-    acc.logIn = acc.owner.toLowerCase().split(" ").map((value) => {
+    acc.logIn = acc.owner.toLowerCase().split(" ").map((value) =>
       value[0]
-    }).join("")
+    ).join("")
   })
 }
 createLogIn(accounts)
@@ -84,12 +83,10 @@ function calcPrintBalance(movements) {
   labelBalance.textContent = `${balance}$`
 }
 
-calcPrintBalance(account1.movements)
-// This funtion calculate sum 
 function calcDisplaySum(movements) {
-  const incomes = movements.filter((value) => {
-    return value > 0
-  }).reduce((acc, value) => acc + value, 0)
+  const incomes = movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, value) => acc + value, 0)
   labelSumIn.textContent = `${incomes}$`
 
   const out = movements
@@ -99,4 +96,29 @@ function calcDisplaySum(movements) {
   labelSumInterest.textContent = `${incomes + out}$`
 }
 
-calcDisplaySum(account1.movements)
+let currentAccounts
+
+btnLogin.addEventListener('click', (e) => {
+  e.preventDefault()
+  console.log('Login')
+  currentAccounts = accounts.find((acc) =>
+    acc.logIn === inputLoginUsername.value)
+  console.log(currentAccounts)
+  if(currentAccounts && currentAccounts.pin === Number(inputLoginPin.value)) {
+    containerApp.style.opacity = 100
+    inputLoginPin.value = inputLoginUsername.value = ''
+    console.log('Pin ok')
+    displayMovements(currentAccounts.movements)
+    calcPrintBalance(currentAccounts.movements)
+    calcDisplaySum(currentAccounts.movements)
+  }
+})
+
+btnTransfer.addEventListener('click', (e) => {
+  return e.preventDefault()
+  const reciveAcc = accounts.find((acc) => {
+    return acc.logIn === inputTransferTo.value
+  })
+  const amout = Number(inputTransferAmount.value)
+  console.log(amout, reciveAcc)
+})
