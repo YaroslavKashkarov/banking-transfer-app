@@ -68,25 +68,27 @@ function displayMovements(movements) {
 }
 
 function createLogIn(accs) {
-  accs.map((acc) => {
-    acc.logIn = acc.owner.toLowerCase().split(" ").map((value) =>
-      value[0]
-    ).join("")
+  accs.forEach((acc) => {
+    acc.logIn = acc.owner
+      .toLowerCase()
+      .split(" ")
+      .map((name) => name[0])
+      .join("")
   })
 }
 createLogIn(accounts)
 
-function calcPrintBalance(movements) {
-  const balance = movements.reduce((acc, value) => {
+function calcPrintBalance(acc) {
+  acc.balance = acc.movements.reduce((acc, value) => {
     return acc + value
   })
-  labelBalance.textContent = `${balance}$`
+  labelBalance.textContent = `${acc.balance}$`
 }
 
 function calcDisplaySum(movements) {
   const incomes = movements
     .filter((mov) => mov > 0)
-    .reduce((acc, value) => acc + value, 0)
+    .reduce((acc, mov) => acc + mov, 0)
   labelSumIn.textContent = `${incomes}$`
 
   const out = movements
@@ -96,29 +98,41 @@ function calcDisplaySum(movements) {
   labelSumInterest.textContent = `${incomes + out}$`
 }
 
-let currentAccounts
+function updateUi(acc) {
+  displayMovements(acc.movements)
+  calcPrintBalance(acc)
+  calcDisplaySum(acc.movements)
+}
+
+let currentAccount
 
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault()
   console.log('Login')
-  currentAccounts = accounts.find((acc) =>
-    acc.logIn === inputLoginUsername.value)
-  console.log(currentAccounts)
-  if(currentAccounts && currentAccounts.pin === Number(inputLoginPin.value)) {
+  currentAccount = accounts.find((acc) => acc.logIn === inputLoginUsername.value)
+  console.log(currentAccount)
+  if(currentAccount && currentAccount.pin === Number(inputLoginPin.value)) {
     containerApp.style.opacity = 100
     inputLoginPin.value = inputLoginUsername.value = ''
-    console.log('Pin ok')
-    displayMovements(currentAccounts.movements)
-    calcPrintBalance(currentAccounts.movements)
-    calcDisplaySum(currentAccounts.movements)
+    console.log('Pin ok!')
+    updateUi(currentAccount)
   }
 })
 
 btnTransfer.addEventListener('click', (e) => {
-  return e.preventDefault()
-  const reciveAcc = accounts.find((acc) => {
-    return acc.logIn === inputTransferTo.value
-  })
-  const amout = Number(inputTransferAmount.value)
-  console.log(amout, reciveAcc)
+  e.preventDefault()
+  const receiveAcc = accounts.find((acc) => acc.logIn === inputTransferTo.value)
+  const amount = Number(inputTransferAmount.value)
+  console.log(amount, receiveAcc)
+  if(
+    receiveAcc &&
+    amount > 0 &&
+    currentAccount.balance >= amount &&
+    receiveAcc.logIn !== currentAccount.logIn
+  ) {
+    currentAccount.movements.push(-amount)
+    receiveAcc.movements.push(amount)
+    updateUi(currentAccount)
+    inputTransferTo.value = inputTransferAmount.value = ''
+  }
 })
