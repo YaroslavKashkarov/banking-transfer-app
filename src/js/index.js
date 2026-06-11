@@ -174,3 +174,9 @@ btnSort.addEventListener('click', (e) => {
   displayMovements(currentAccount.movements, !sorted)
   sorted = !sorted
 })
+
+labelBalance.addEventListener('click', () => {
+  Array.from(document.querySelectorAll('.movements__value'), (val, i) => {
+    return val.innerText = val.textContent.replace('$', ' USD')
+  })
+})
