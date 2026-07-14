@@ -4,14 +4,15 @@ const account1 = {
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   pin: 1111,
   movementsDates: [
-    "2019-11-18T21:31:17.178Z",
-    "2019-12-23T07:42:02.383Z",
-    "2020-01-28T09:15:04.904Z",
-    "2020-04-01T10:17:24.185Z",
-    "2020-05-08T14:11:59.604Z",
-    "2023-01-29T17:01:17.194Z",
-    "2023-01-31T23:36:17.929Z",
-    "2023-02-02T10:51:36.790Z",
+    /** I wanna create to the ramdom date in the future*/
+    "2019-11-01T13:15:33.035Z",
+    "2019-11-30T09:48:16.867Z",
+    "2019-12-25T06:04:23.907Z",
+    "2020-01-25T14:18:46.235Z",
+    "2026-07-08T16:33:06.386Z",
+    "2026-07-10T14:43:26.374Z",
+    "2026-07-13T18:49:59.371Z",
+    "2026-07-14T12:01:20.894Z",
   ]
 }
 
@@ -20,14 +21,15 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   pin: 2222,
   movementsDates: [
+    /** I wanna create to the ramdom date in the future*/
     "2019-11-01T13:15:33.035Z",
     "2019-11-30T09:48:16.867Z",
     "2019-12-25T06:04:23.907Z",
     "2020-01-25T14:18:46.235Z",
     "2020-02-05T16:33:06.386Z",
     "2020-04-10T14:43:26.374Z",
-    "2020-06-25T18:49:59.371Z",
-    "2020-07-26T12:01:20.894Z",
+    "2020-07-13T18:49:59.371Z",
+    "2026-07-14T12:01:20.894Z",
   ]
 }
 
@@ -36,14 +38,15 @@ const account3 = {
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   pin: 3333,
   movementsDates: [
+    /** I wanna create to the ramdom date in the future*/
     "2019-11-01T13:15:33.035Z",
     "2019-11-30T09:48:16.867Z",
     "2019-12-25T06:04:23.907Z",
     "2020-01-25T14:18:46.235Z",
     "2020-02-05T16:33:06.386Z",
     "2020-04-10T14:43:26.374Z",
-    "2020-06-25T18:49:59.371Z",
-    "2020-07-26T12:01:20.894Z",
+    "2020-07-13T18:49:59.371Z",
+    "2026-07-14T12:01:20.894Z",
   ]
 }
 
@@ -52,11 +55,15 @@ const account4 = {
   movements: [430, 1000, 700, 50, 90],
   pin: 4444,
   movementsDates: [
+    /** I wanna create to the ramdom date in the future*/
     "2019-11-01T13:15:33.035Z",
     "2019-11-30T09:48:16.867Z",
     "2019-12-25T06:04:23.907Z",
     "2020-01-25T14:18:46.235Z",
     "2020-02-05T16:33:06.386Z",
+    "2020-04-10T14:43:26.374Z",
+    "2020-07-13T18:49:59.371Z",
+    "2026-07-14T12:01:20.894Z",
   ]
 }
 
@@ -88,6 +95,37 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount")
 const inputCloseUsername = document.querySelector(".form__input--user")
 const inputClosePin = document.querySelector(".form__input--pin")
 
+
+const formatMovmentDate = (date) => {
+  const calcDatePassed = (date1, date2) => {
+    return Math.round((date1 - date2) / (1000 * 60 * 60 * 24))
+  }
+
+  const daysPassed = calcDatePassed(new Date(), date)
+  console.log(daysPassed)
+
+  if(daysPassed === 0) {
+    return 'Today'
+  }
+  if(daysPassed === 1) {
+    return 'Yesterday'
+  }
+  if(daysPassed >= 2 && daysPassed <= 4) {
+    return `It has been ${daysPassed} day`
+  }
+  if(daysPassed <= 7) {
+    return `It has been ${daysPassed} days`
+  }
+
+  const year = date.getFullYear()
+  const mouth = `${date.getMonth() + 1}`.padStart(2, 0)
+  const day = `${date.getDate()}`.padStart(2, 0)
+  const hours = `${date.getHours()}`.padStart(2, 0)
+  const minutes = `${date.getMinutes()}`.padStart(2, 0)
+  return `${day}/${mouth}/${year} ${hours}:${minutes}`
+
+}
+
 function displayMovements(acc, sort = false) {
   containerMovements.innerHTML = ''
 
@@ -98,12 +136,7 @@ function displayMovements(acc, sort = false) {
     const typeMassege = value > 0 ? "deposit" : "withdrawal"
     const date = new Date(acc.movementsDates[i])
 
-    const year = date.getFullYear()
-    const mouth = `${date.getMonth() + 1}`.padStart(2, 0)
-    const day = `${date.getDate()}`.padStart(2, 0)
-    const hours = `${date.getHours()}`.padStart(2, 0)
-    const minutes = `${date.getMinutes()}`.padStart(2, 0)
-    const displayDate = `${day}/${mouth}/${year} ${hours}:${minutes}`
+    const displayDate = formatMovmentDate(date)
 
     const html = `
         <div class="movements__row">
