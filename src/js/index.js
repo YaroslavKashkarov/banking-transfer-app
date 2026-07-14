@@ -187,8 +187,8 @@ function updateUi(acc) {
   calcDisplaySum(acc.movements)
 }
 
+// Button entarence to account
 let currentAccount
-
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault()
   console.log('Login')
@@ -197,14 +197,21 @@ btnLogin.addEventListener('click', (e) => {
   if(currentAccount && currentAccount.pin === Number(inputLoginPin.value)) {
     containerApp.style.opacity = 100
     inputLoginPin.value = inputLoginUsername.value = ''
-    const now = new Date()
-    const year = now.getFullYear()
-    const mouth = `${now.getMonth() + 1}`.padStart(2, 0)
-    const date = `${now.getDate()}`.padStart(2, 0)
-    const hours = `${now.getHours()}`.padStart(2, 0)
-    const minutes = `${now.getMinutes()}`.padStart(2, 0)
-    const seconds = `${now.getSeconds()}`.padStart(2, 0)
-    labelDate.textContent = `${date}/${mouth}/${year} ${hours}:${minutes}:${seconds}`
+    /**Update currently date */
+    const local = navigator.language
+    const options = {
+      year: 'numeric',
+      mouth: 'numeric',
+      day: 'numeric',
+      weekDay: 'short',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      timeZoneName: 'long',
+      hour24: true
+    }
+
+    labelDate.textContent = Intl.DateTimeFormat(local, options).format(new Date)
     console.log('Pin ok!')
     updateUi(currentAccount)
   }
