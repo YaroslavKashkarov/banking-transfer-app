@@ -181,14 +181,37 @@ function calcDisplaySum(movements) {
   labelSumInterest.textContent = `${incomes + out}$`
 }
 
+// Update the interface website
 function updateUi(acc) {
   displayMovements(acc)
   calcPrintBalance(acc)
   calcDisplaySum(acc.movements)
 }
 
+// Timeout session (Timeout & Interval)
+const startLogOut = () => {
+  let time = 600
+
+  const tick = () => {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0)
+    const second = String(Math.trunc(time % 60)).padStart(2, 0)
+    labelTimer.textContent = `${min}:${second}`
+
+    if(time == 0) {
+      clearInterval(timer)
+      containerApp.style.opacity = 0
+    }
+    time--
+  }
+
+  tick()
+  const timer = setInterval(tick, 1000)
+  return timer
+}
+
 // Button entarence to account
 let currentAccount
+let timer
 btnLogin.addEventListener('click', (e) => {
   e.preventDefault()
   console.log('Login')
@@ -197,6 +220,7 @@ btnLogin.addEventListener('click', (e) => {
   if(currentAccount && currentAccount.pin === Number(inputLoginPin.value)) {
     containerApp.style.opacity = 100
     inputLoginPin.value = inputLoginUsername.value = ''
+
     /**Update currently date */
     const local = navigator.language
     const options = {
@@ -208,11 +232,17 @@ btnLogin.addEventListener('click', (e) => {
       minute: 'numeric',
       second: 'numeric',
       timeZoneName: 'long',
-      hour24: true
+      hour12: false
     }
 
     labelDate.textContent = Intl.DateTimeFormat(local, options).format(new Date)
     console.log('Pin ok!')
+
+    if(timer) {
+      clearInterval(timer)
+    }
+
+    timer = startLogOut()
     updateUi(currentAccount)
   }
 })
@@ -230,7 +260,12 @@ btnTransfer.addEventListener('click', (e) => {
   ) {
     currentAccount.movements.push(-amount)
     receiveAcc.movements.push(amount)
+
+    // Added date to movments
     currentAccount.movementsDates.push(new Date().toISOString)
+
+    clearInterval(timer)
+    timer = startLogOut()
     updateUi(currentAccount)
     inputTransferTo.value = inputTransferAmount.value = ''
   }
@@ -250,12 +285,18 @@ btnClose.addEventListener('click', (e) => {
   inputCloseUsername.value = inputClosePin.value = ''
 })
 
+// Addded money to account
 btnLoan.addEventListener('click', (e) => {
   e.preventDefault()
   const amount = Number(inputLoanAmount.value)
   if(amount > 0) {
     currentAccount.movements.push(amount)
+
+    // Added date to array movmentsDates
     currentAccount.movementsDates.push(new Date().toISOString())
+    // Update timer to transfer money to another accounts
+    clearInterval(timer)
+    timer = startLogOut()
     updateUi(currentAccount)
   }
   inputLoanAmount.value = ''
@@ -277,3 +318,16 @@ labelBalance.addEventListener('click', () => {
     return val.innerText = val.textContent.replace('$', ' USD')
   })
 })
+
+/**
+ * !!! It`s necessary to finished this chunk code in the future !!!
+ */
+const num = new Number()
+
+const local = navigation.labelBalance
+const options = {
+  style: 'currency',
+  currency: 'USD'
+}
+
+const usd = Intl.NumberFormat(local, options).format()
